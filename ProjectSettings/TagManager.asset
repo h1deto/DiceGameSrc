@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 3
+  tags:
+  - 1
+  - Dice1
+  - Dice2
+  - Dice3
+  - Dice4
+  - Dice5
+  - Dice6
+  - Spawn1
+  - Spawn2
+  - Spawn3
+  - Spawn4
+  - Spawn5
+  - Spawn6
+  - ScoreButton1
+  - ScoreButton2
+  - ScoreButton3
+  - ScoreButton4
+  - ScoreButton5
+  - ScoreButton6
+  - ScoreButton7
+  - ScoreButton8
+  - ScoreButton9
+  - ScoreButton10
+  - ScoreButton11
+  - ScoreButton12
+  - ScoreButton13
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  m_RenderingLayers:
+  - Default
