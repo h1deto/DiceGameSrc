@@ -49,8 +49,9 @@ public class ScoreBoardScript : MonoBehaviour
     {
         if (kanStrykas && !använd)
         {
-            använd = true;
-            kanStrykas = false;
+
+            diceRollScript.scoreBoardScriptKnappar[strykIndex].använd = true;
+            diceRollScript.scoreBoardScriptKnappar[strykIndex].kanStrykas = false;
 
             GameObject strykKnapp = diceRollScript.scoreBoardScriptKnappar[strykIndex].gameObject;
             TextMeshProUGUI strykKnappText = strykKnapp.GetComponentInChildren<TextMeshProUGUI>();

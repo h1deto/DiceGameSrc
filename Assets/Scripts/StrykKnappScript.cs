@@ -11,7 +11,7 @@ public class StrykKnappScript : MonoBehaviour
         
     }
 
-    public void StrykKnapp()
+    public void StrykKnappen()
     {
         ColorUtility.TryParseHtmlString("#FF1E00FF", out Color fullAlphaRöd);
 
