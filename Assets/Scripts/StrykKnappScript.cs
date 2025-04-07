@@ -14,19 +14,17 @@ public class StrykKnappScript : MonoBehaviour
     public void StrykKnapp()
     {
         ColorUtility.TryParseHtmlString("#FF1E00FF", out Color fullAlphaRöd);
-        
-        ColorUtility.TryParseHtmlString("#2BFF0000", out Color ingenAlpha);
 
         for (int i = 0; i < diceRollScript.scoreBoardScriptKnappar.Length; i++)
         {
             if (diceRollScript.scoreBoardScriptKnappar[i].använd == false)
             {
+                diceRollScript.scoreBoardScriptKnappar[i].kanStrykas = true;
                 GameObject strykKnapp = GameObject.FindGameObjectWithTag("ScoreButton" + (i + 1));
                 Image strykKnappImage = strykKnapp.GetComponent<Image>();
 
                 strykKnappImage.color = fullAlphaRöd;
 
-                diceRollScript.scoreBoardScriptKnappar[i].kanStrykas = true;
             }
         }
     }

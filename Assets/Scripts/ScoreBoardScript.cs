@@ -1,7 +1,4 @@
 using System;
-using System.Diagnostics.SymbolStore;
-using System.Linq;
-using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,7 +15,7 @@ public class ScoreBoardScript : MonoBehaviour
     [SerializeField] private GameObject bonusNot;
 
     static int[] totalaPoäng = new int[13];
-    static int[] multipliers = new int[] {1, 2, 3, 4, 5, 6};
+    static int[] multipliers = new int[] { 1, 2, 3, 4, 5, 6 };
 
     static bool fårBonus = false;
 
@@ -52,62 +49,67 @@ public class ScoreBoardScript : MonoBehaviour
     {
         if (kanStrykas && !använd)
         {
-            diceRollScript.scoreBoardScriptKnappar[strykIndex].använd = true;
+            använd = true;
+            kanStrykas = false;
 
-            diceRollScript.KollaTärningar();
+            GameObject strykKnapp = diceRollScript.scoreBoardScriptKnappar[strykIndex].gameObject;
+            TextMeshProUGUI strykKnappText = strykKnapp.GetComponentInChildren<TextMeshProUGUI>();
+            Button buttonComponent = strykKnapp.GetComponent<Button>();
 
-            GameObject stryckKnapp = diceRollScript.scoreBoardScriptKnappar[strykIndex].gameObject;
-            TextMeshProUGUI strykKnappText = stryckKnapp.GetComponentInChildren<TextMeshProUGUI>();
+            buttonComponent.interactable = false;
 
             strykKnappText.text = "X";
             strykKnappText.fontSize = 36;
 
-            for (int i = 0; i < diceRollScript.scoreBoardScriptKnappar.Length; i++)
-            {
-                diceRollScript.scoreBoardScriptKnappar[i].kanStrykas = false;
-            }
+
+            diceRollScript.harSkrivitDennaHanden = true;
+
+
+            diceRollScript.KollaTärningar();
+            diceRollScript.antalRullningar = 0;
+            tärningarKvarScript.TärningarKvar();
         }
     }
 
     public void ScoreKnappGenerell(int index)
     {
-        if (kanSkrivas && !använd)
+        if (kanSkrivas && !använd && !kanStrykas)
         {
-            
+
             // hämtar texten i knappen
-            GameObject ettTillSexKnapp = GameObject.FindGameObjectWithTag("ScoreButton" +(index + 1));
+            GameObject ettTillSexKnapp = GameObject.FindGameObjectWithTag("ScoreButton" + (index + 1));
             TextMeshProUGUI ettTillSexKnappText = ettTillSexKnapp.GetComponentInChildren<TextMeshProUGUI>();
-            
-            
+
+
             // poängdelen
             totalaPoäng[index] = diceRollScript.antalAvVarjeTärning[index] * multipliers[index];
             ettTillSexKnappText.text = totalaPoäng[index].ToString();
-            
-            
+
+
             // gör att denna knappen inte börjar lysa igen
             använd = true;
-            
-            
+
+
             // gör att knappen inte går att klicka på igen
             Button buttonComponent = ettTillSexKnapp.GetComponent<Button>();
             buttonComponent.interactable = false;
-            
-             
+
+
             //
             RäknarTotalPoäng();
-            
-            
+
+
             // gör att man inte kan klicka på en annan knapp, och uppdaterar färgen efter man har klickat på en knapp
             diceRollScript.harSkrivitDennaHanden = true;
             diceRollScript.KollaTärningar();
 
             RäknaBonus();
-            
-            
+
+
             // återställer antal rolls
             diceRollScript.antalRullningar = 0;
-            
-            
+
+
             // kör denna metoden för att återställa texturerna för antal rolls
             tärningarKvarScript.TärningarKvar();
         }
@@ -115,13 +117,13 @@ public class ScoreBoardScript : MonoBehaviour
     public void ScoreKnappUndreDelen(int index)
     {
         int tempIndex = index + 6;
-        if (kanSkrivas && !använd)
+        if (kanSkrivas && !använd && !kanStrykas)
         {
             int[] tempVärden = new int[7];
 
             int indexTriss = Array.FindIndex(diceRollScript.antalAvVarjeTärning, value => value >= 3);
             if (indexTriss > -1)
-            { 
+            {
                 tempVärden[0] = diceRollScript.antalAvVarjeTärning[indexTriss] * multipliers[indexTriss];
             }
 
@@ -138,7 +140,7 @@ public class ScoreBoardScript : MonoBehaviour
             tempVärden[6] = diceRollScript.totalValue;
 
 
-            GameObject underKnappar = GameObject.FindGameObjectWithTag("ScoreButton"+(tempIndex+1));
+            GameObject underKnappar = GameObject.FindGameObjectWithTag("ScoreButton" + (tempIndex + 1));
             TextMeshProUGUI underKnapparText = underKnappar.GetComponentInChildren<TextMeshProUGUI>();
 
             underKnapparText.text = tempVärden[index].ToString();
@@ -174,7 +176,7 @@ public class ScoreBoardScript : MonoBehaviour
         for (int i = 0; i < 6; i++)
         {
             fårDuBonus += totalaPoäng[i];
-            
+
             if (diceRollScript.scoreBoardScriptKnappar[i].använd)
             {
                 rK++;

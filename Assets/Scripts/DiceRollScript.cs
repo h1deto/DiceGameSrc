@@ -156,7 +156,7 @@ public class DiceRollScript : MonoBehaviour
             undreKnappar[i] = GameObject.FindGameObjectWithTag("ScoreButton" + (i + 7));
             Image undreKnapparImage = undreKnappar[i].GetComponent<Image>();
 
-            if (underVärdenBool[i] && scoreBoardScriptKnappar[i + 6].använd == false && !harSkrivitDennaHanden)
+            if (underVärdenBool[i] && !scoreBoardScriptKnappar[i + 6].använd && !harSkrivitDennaHanden)
             {
                 scoreBoardScriptKnappar[i + 6].kanSkrivas = true;
 
