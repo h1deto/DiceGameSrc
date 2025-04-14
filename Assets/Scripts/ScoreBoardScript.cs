@@ -7,6 +7,7 @@ public class ScoreBoardScript : MonoBehaviour
 {
     private TärningarKvarScript tärningarKvarScript;
     private DiceRollScript diceRollScript;
+
     private TextMeshProUGUI totalPoängText;
     private TextMeshProUGUI toppenPoäng;
     private TextMeshProUGUI toppenPoängMedBonus;
@@ -22,8 +23,6 @@ public class ScoreBoardScript : MonoBehaviour
     public bool använd = false;
     public bool kanSkrivas = false;
     public bool kanStrykas = false;
-
-
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -47,11 +46,11 @@ public class ScoreBoardScript : MonoBehaviour
     }
     public void StrykKnapp(int strykIndex)
     {
-        if (kanStrykas && !använd)
+        if (kanStrykas && !använd && !diceRollScript.harSkrivitDennaHanden)
         {
 
             diceRollScript.scoreBoardScriptKnappar[strykIndex].använd = true;
-            diceRollScript.scoreBoardScriptKnappar[strykIndex].kanStrykas = false;
+            
 
             GameObject strykKnapp = diceRollScript.scoreBoardScriptKnappar[strykIndex].gameObject;
             TextMeshProUGUI strykKnappText = strykKnapp.GetComponentInChildren<TextMeshProUGUI>();
@@ -59,22 +58,30 @@ public class ScoreBoardScript : MonoBehaviour
 
             buttonComponent.interactable = false;
 
+            totalaPoäng[strykIndex] = 0;
+
             strykKnappText.text = "X";
             strykKnappText.fontSize = 36;
 
+            for (int i = 0; i < diceRollScript.scoreBoardScriptKnappar.Length; i++)
+            {
+                diceRollScript.scoreBoardScriptKnappar[i].kanStrykas = false;
+            }
+
 
             diceRollScript.harSkrivitDennaHanden = true;
-
-
             diceRollScript.KollaTärningar();
+
+
             diceRollScript.antalRullningar = 0;
             tärningarKvarScript.TärningarKvar();
+
         }
     }
 
     public void ScoreKnappGenerell(int index)
     {
-        if (kanSkrivas && !använd && !kanStrykas)
+        if (kanSkrivas && !använd && !kanStrykas && !diceRollScript.harSkrivitDennaHanden)
         {
 
             // hämtar texten i knappen
@@ -102,6 +109,7 @@ public class ScoreBoardScript : MonoBehaviour
 
             // gör att man inte kan klicka på en annan knapp, och uppdaterar färgen efter man har klickat på en knapp
             diceRollScript.harSkrivitDennaHanden = true;
+
             diceRollScript.KollaTärningar();
 
             RäknaBonus();
@@ -118,7 +126,7 @@ public class ScoreBoardScript : MonoBehaviour
     public void ScoreKnappUndreDelen(int index)
     {
         int tempIndex = index + 6;
-        if (kanSkrivas && !använd && !kanStrykas)
+        if (kanSkrivas && !använd && !kanStrykas && !diceRollScript.harSkrivitDennaHanden)
         {
             int[] tempVärden = new int[7];
 

@@ -8,6 +8,7 @@ public class DiceRollScript : MonoBehaviour
 {
     [SerializeField] private TärningarKvarScript tärningarKvarScript;
     [SerializeField] public TextMeshProUGUI totalValueFromDiceRolls;
+    public StrykKnappScript strykKnappScript;
 
 
     public GameObject[] prefabs;
@@ -22,19 +23,16 @@ public class DiceRollScript : MonoBehaviour
 
 
     private bool[] tärningMarkerad = new bool[5];
-    public bool harSkrivitDennaHanden = false;
+    public bool harSkrivitDennaHanden = true;
 
 
-    private int[] tärningVärde = new int[5];
+    public int[] tärningVärde = new int[] {-1,-2,-3,-4,-5,-6};
     public int[] antalAvVarjeTärning = new int[6];
 
 
     // public bool[] kanSkrivas = new bool[13];
     // public bool[] poängAnvänd = new bool[13];
     // dessa arrayer var för knapparna, men det är omskrivet till en array med objects
-
-
-
 
 
     public int antalRullningar = 0;
@@ -77,7 +75,7 @@ public class DiceRollScript : MonoBehaviour
                 }
             }
 
-            harSkrivitDennaHanden = false;
+            strykKnappScript.omKnappenTryckt = false;
 
             antalRullningar++;
             KollaTärningar();
@@ -109,7 +107,10 @@ public class DiceRollScript : MonoBehaviour
 
         foreach (int value in tärningVärde)
         {
-            antalAvVarjeTärning[value]++;
+            if (value >= 0)
+            {
+                antalAvVarjeTärning[value]++;
+            }
         }
 
         Color fullAlpha;
@@ -169,5 +170,7 @@ public class DiceRollScript : MonoBehaviour
                 undreKnapparImage.color = ingenAlpha;
             }
         }
+
+        harSkrivitDennaHanden = false;
     }
 }
