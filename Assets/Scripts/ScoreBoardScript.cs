@@ -7,13 +7,20 @@ public class ScoreBoardScript : MonoBehaviour
 {
     private TärningarKvarScript tärningarKvarScript;
     private DiceRollScript diceRollScript;
+    private StrykKnappScript strykKnappScript;
 
     private TextMeshProUGUI totalPoängText;
     private TextMeshProUGUI toppenPoäng;
     private TextMeshProUGUI toppenPoängMedBonus;
 
+    [SerializeField] TextMeshProUGUI slutPoäng;
+
     [SerializeField] private GameObject bonusCheck;
     [SerializeField] private GameObject bonusNot;
+
+    [SerializeField] private GameObject endgameScreen;
+
+    AudioSource strykLjud;
 
     static int[] totalaPoäng = new int[13];
     static int[] multipliers = new int[] { 1, 2, 3, 4, 5, 6 };
@@ -27,9 +34,14 @@ public class ScoreBoardScript : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        GameObject stryk = GameObject.Find("ScratchSound");
+        strykLjud = stryk.GetComponent<AudioSource>();
 
         GameObject diceRollObject = GameObject.Find("RollButton");
         diceRollScript = diceRollObject.GetComponent<DiceRollScript>();
+
+        GameObject strykKnapp = GameObject.Find("Stryk");
+        strykKnappScript = strykKnapp.GetComponent<StrykKnappScript>();
 
         GameObject totalPoäng = GameObject.Find("TotalPoäng");
         totalPoängText = totalPoäng.GetComponent<TextMeshProUGUI>();
@@ -50,7 +62,7 @@ public class ScoreBoardScript : MonoBehaviour
         {
 
             diceRollScript.scoreBoardScriptKnappar[strykIndex].använd = true;
-            
+
 
             GameObject strykKnapp = diceRollScript.scoreBoardScriptKnappar[strykIndex].gameObject;
             TextMeshProUGUI strykKnappText = strykKnapp.GetComponentInChildren<TextMeshProUGUI>();
@@ -69,6 +81,8 @@ public class ScoreBoardScript : MonoBehaviour
             }
 
 
+            RäknarTotalPoäng();
+
             diceRollScript.harSkrivitDennaHanden = true;
             diceRollScript.KollaTärningar();
 
@@ -76,6 +90,10 @@ public class ScoreBoardScript : MonoBehaviour
             diceRollScript.antalRullningar = 0;
             tärningarKvarScript.TärningarKvar();
 
+            strykKnappScript.omKnappenTryckt = false;
+
+            ÅterställTärningar();
+            strykLjud.Play(0);
         }
     }
 
@@ -103,7 +121,7 @@ public class ScoreBoardScript : MonoBehaviour
             buttonComponent.interactable = false;
 
 
-            //
+            
             RäknarTotalPoäng();
 
 
@@ -121,6 +139,9 @@ public class ScoreBoardScript : MonoBehaviour
 
             // kör denna metoden för att återställa texturerna för antal rolls
             tärningarKvarScript.TärningarKvar();
+
+            ÅterställTärningar();
+            strykLjud.Play(0);
         }
     }
     public void ScoreKnappUndreDelen(int index)
@@ -174,7 +195,24 @@ public class ScoreBoardScript : MonoBehaviour
 
 
             tärningarKvarScript.TärningarKvar();
+
+            ÅterställTärningar();
+            strykLjud.Play(0);
         }
+    }
+    private void ÅterställTärningar()
+    {
+        for (int i = 0; i < diceRollScript.tärningarFinns.Length; i++)
+        {
+            if (diceRollScript.tärningarFinns[i] != null)
+            {
+                Destroy(diceRollScript.tärningarFinns[i]);
+            }
+
+            diceRollScript.tärningMarkerad[i] = false;
+        }
+
+        //diceRollScript.totalValue = 0;
     }
 
     public void RäknaBonus()
@@ -217,6 +255,8 @@ public class ScoreBoardScript : MonoBehaviour
 
     public void RäknarTotalPoäng()
     {
+        bool ärSpeletKlart = true;
+
         int total = 0;
         foreach (int tal in totalaPoäng)
         {
@@ -225,6 +265,27 @@ public class ScoreBoardScript : MonoBehaviour
         if (fårBonus)
         {
             total += 35;
+        }
+        for (int i = 0; i < totalaPoäng.Length; i++)
+        {
+            if (diceRollScript.scoreBoardScriptKnappar[i].använd == false)
+            {
+                ärSpeletKlart = false;
+            }
+        }
+        if (ärSpeletKlart)
+        {
+            Debug.Log("Spelet är klart, du fick: " + total + " poäng.");
+            // ska lägga till en ruta som visar poäng, och sedan att den skriver poängen till en highscore fil
+
+            endgameScreen.SetActive(true);
+
+            if (total > PlayerPrefs.GetInt("HighScore", 0))
+            {
+                PlayerPrefs.SetInt("HighScore", total);
+            }
+
+            slutPoäng.text = $"Spelet är slut\n Du fick {total} poäng.";
         }
 
         totalPoängText.text = total.ToString();

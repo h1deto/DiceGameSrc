@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,8 +13,9 @@ public class DiceRollScript : MonoBehaviour
 
 
     public GameObject[] prefabs;
-    private GameObject[] tärningarFinns = new GameObject[5];
+    public GameObject[] tärningarFinns = new GameObject[5];
 
+    public AudioSource rullaTärningLjud;
 
     GameObject[] ettTillSexKnapp = new GameObject[6];
     GameObject[] undreKnappar = new GameObject[7];
@@ -22,7 +24,7 @@ public class DiceRollScript : MonoBehaviour
     public ScoreBoardScript[] scoreBoardScriptKnappar;
 
 
-    private bool[] tärningMarkerad = new bool[5];
+    public bool[] tärningMarkerad = new bool[5];
     public bool harSkrivitDennaHanden = true;
 
 
@@ -51,6 +53,24 @@ public class DiceRollScript : MonoBehaviour
         totalValueFromDiceRolls.text = totalValue.ToString();
     }
 
+    public void KlickadTärning(int index)
+    {
+        if (index >= 0 && index < tärningMarkerad.Length)
+        {
+            tärningMarkerad[index] = !tärningMarkerad[index];
+            Debug.Log($"Dice {index + 1} marked: {tärningMarkerad[index]}");
+        }
+    }
+
+    public bool ÄrTärningMarkerad(int index)
+    {
+        if (index >= 0 && index < tärningMarkerad.Length)
+        {
+            return tärningMarkerad[index];
+        }
+        return false;
+    }
+
     public void TärningsRullande()
     {
         if (antalRullningar < maxRullningar)
@@ -71,6 +91,10 @@ public class DiceRollScript : MonoBehaviour
                     Vector2 tärningPosition = tärningSpawn.transform.position;
                     tärningarFinns[i] = Instantiate(prefabs[tärningVärde[i]], tärningPosition, tärningSpawn.transform.rotation);
 
+                    // 
+                    KlickaPåTärningarScript clickHandler = tärningarFinns[i].AddComponent<KlickaPåTärningarScript>();
+                    clickHandler.Initialize(i, this);
+
                     totalValue += tärningVärde[i] + 1;
                 }
             }
@@ -81,6 +105,7 @@ public class DiceRollScript : MonoBehaviour
             KollaTärningar();
             tärningarKvarScript.TärningarKvar();
 
+            rullaTärningLjud.Play();
         }
     }
 
@@ -114,10 +139,10 @@ public class DiceRollScript : MonoBehaviour
         }
 
         Color fullAlpha;
-        ColorUtility.TryParseHtmlString("#2BFF00FF", out fullAlpha);
+        UnityEngine.ColorUtility.TryParseHtmlString("#2BFF00FF", out fullAlpha);
 
         Color ingenAlpha;
-        ColorUtility.TryParseHtmlString("#2BFF0000", out ingenAlpha);
+        UnityEngine.ColorUtility.TryParseHtmlString("#2BFF0000", out ingenAlpha);
 
 
         for (int i = 0; i < 6; i++)
